@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/fastai/nbdev
+    rev: 2.2.10
+    hooks:
+      - id: nbdev_clean
+      - id: nbdev_export
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0 # Use the latest stable version
+    hooks:
+      - id: end-of-file-fixer
+      # You might also want this related hook:
+      - id: trailing-whitespace # Removes extraneous whitespace at the end of lines
+        args: [--markdown-linebreak-ext=md, mkd, mdown, markdown] # To preserve Markdown hard linebreaks
+
+# https://nbdev.fast.ai/tutorials/pre_commit.html
+# Install pre-commit hooks into your repo:
+# pre-commit install
