@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "DataScience_exploration"
+  site-url: "https://Ramon-PR.github.io/DataScience_exploration"
+  description: "The repo that I use to test, explore and learn different concepts used in Data Science"
+  repo-branch: main
+  repo-url: "https://github.com/Ramon-PR/DataScience_exploration"
