@@ -1,0 +1,75 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DataScience_exploration",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation.",
+    "crumbs": [
+      "DataScience_exploration"
+    ]
+  },
+  {
+    "objectID": "index.html#developer-guide",
+    "href": "index.html#developer-guide",
+    "title": "DataScience_exploration",
+    "section": "Developer Guide",
+    "text": "Developer Guide\nIf you are new to using nbdev here are some useful pointers to get you started.\n\nInstall DataScience_exploration in Development mode\n# make sure DataScience_exploration package is installed in development mode\n$ pip install -e .\n\n# make changes under nbs/ directory\n# ...\n\n# compile to have changes apply to DataScience_exploration\n$ nbdev_prepare",
+    "crumbs": [
+      "DataScience_exploration"
+    ]
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "DataScience_exploration",
+    "section": "Usage",
+    "text": "Usage\n\nInstallation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/Ramon-PR/DataScience_exploration.git\nor from conda\n$ conda install -c Ramon-PR DataScience_exploration\nor from pypi\n$ pip install DataScience_exploration\n\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on conda and pypi respectively.",
+    "crumbs": [
+      "DataScience_exploration"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "DataScience_exploration",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2",
+    "crumbs": [
+      "DataScience_exploration"
+    ]
+  },
+  {
+    "objectID": "datasets/rir_databases.html",
+    "href": "datasets/rir_databases.html",
+    "title": "Class for RIR measurement databases",
+    "section": "",
+    "text": "We will define many class properties with @property and to make sure all the attributes are initialized we define the following method\n\nsource\n\n\n\n checked_property (attr_name:str, attr_type:type=&lt;class 'object'&gt;)\n\nEnsures that the attribute is initialized before accessing it.\nExample of use:\n\nclass Mics(ABC):  \n    _fs: Optional[int] = None  \n    fs = checked_property('_fs', float)\n\n\nmic = Mics()\nprint(mic._fs)  # ``_fs`` is None,\ntry:\n    print(mic.fs)  # ❌ But the property ``fs`` requires _fs to be initialized to a float value\nexcept ValueError as e:\n    print(f\"Caught ValueError: {e}\")\n\nNone\nCaught ValueError: Attribute '_fs' is not initialized.",
+    "crumbs": [
+      "datasets",
+      "Class for RIR measurement databases"
+    ]
+  },
+  {
+    "objectID": "datasets/rir_databases.html#helper-funtions",
+    "href": "datasets/rir_databases.html#helper-funtions",
+    "title": "Class for RIR measurement databases",
+    "section": "",
+    "text": "We will define many class properties with @property and to make sure all the attributes are initialized we define the following method\n\nsource\n\n\n\n checked_property (attr_name:str, attr_type:type=&lt;class 'object'&gt;)\n\nEnsures that the attribute is initialized before accessing it.\nExample of use:\n\nclass Mics(ABC):  \n    _fs: Optional[int] = None  \n    fs = checked_property('_fs', float)\n\n\nmic = Mics()\nprint(mic._fs)  # ``_fs`` is None,\ntry:\n    print(mic.fs)  # ❌ But the property ``fs`` requires _fs to be initialized to a float value\nexcept ValueError as e:\n    print(f\"Caught ValueError: {e}\")\n\nNone\nCaught ValueError: Attribute '_fs' is not initialized.",
+    "crumbs": [
+      "datasets",
+      "Class for RIR measurement databases"
+    ]
+  },
+  {
+    "objectID": "datasets/rir_databases.html#database-for-microphones",
+    "href": "datasets/rir_databases.html#database-for-microphones",
+    "title": "Class for RIR measurement databases",
+    "section": "Database for microphones",
+    "text": "Database for microphones\n\nThe base class to handle RIR measurements.\n\nThis class defines common properties and methods for the different RIR databases that will inherit from it. The class DB_microphones will be an abstract class (from abc import ABC, abstractmethod)\n\nABC: base clase to declare an Abstract Base Class\n\nabstractmethod: it is a decorator to indicate which methods have to be implemented by the subclasses\n\nThis is useful since this base class can not be implemented and will force the subclasses to implement certain methods abstractmethod\nInspired by MNIST dataset, we will download the data in a folder structure like ./root/class_name/raw.\n\nroot: is a parameter passed to the class\nclass_name: is the name of the class used to download the database\n\nraw: is the subfolder where the raw data is downloaded\n\nand we will include a mirror list with the urls where we can find the data to download, and a list resources with the name of the file to download and it’s md5 checksum.\n\nsource\n\nDB_microphones\n\n DB_microphones (root:str='./data', dataname:str='RIR',\n                 signal_start:int=0, signal_size:Optional[int]=None)\n\nBase class for microphone databases. I define the @property methods here, so I don’t have to redefine them in the subclasses.\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nroot\nstr\n./data\nPath to the root directory of the database, where the data will be dowloaded\n\n\ndataname\nstr\nRIR\nName of the dataset, used to create a subdirectory in the root directory\n\n\nsignal_start\nint\n0\nStart index of the signal in the data\n\n\nsignal_size\nOptional\nNone\nint or None. Size of the signal to be extracted from the data, if None, the whole signal will be loaded.\n\n\n\n\n\nZea database\n\nDatabase from Elias Zea . It will inherit from DB_micorphones\n\nThis is one of the RIR databases. It will have to implement it’s own attributes:\n+ mirrors\n+ resources\n+ microphone spacing\nAnd the methods:\n+ To check what resource to load\n+ To download the resources\n+ To unpack the downloaded resources\n+ To load the selected resource (database/dataname)\n+ To get the different attributes in the database: dx, dt, fs, num_mics, num_sources\n+ And also the data related with the microphone recordings: imic, position, time_samples, signal\n\nsource\n\n\nZeaRIR\n\n ZeaRIR (root:str='./data', dataname:str='Balder', signal_start:int=0,\n         signal_size:Optional[int]=None)\n\nZeaRIR database.\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nroot\nstr\n./data\nPath to the root directory of the database, where the data will be dowloaded\n\n\ndataname\nstr\nBalder\nString matching the name of the resources to download and load. (if several resources are available, all will be downloaded but only the first one will be loaded).\n\n\nsignal_start\nint\n0\nStart index of the signal to load.\n\n\nsignal_size\nOptional\nNone\nSize of the signal to load. If None, the whole signal will be loaded.\n\n\n\n\nChecks that Zea database works\n\ndb = ZeaRIR(root=\"./data\", dataname=\"RIR\", signal_start=0, signal_size=128)\n\nMatched resources to download:\n- BalderRIR.mat\n- FrejaRIR.mat\n- MuninRIR.mat\nLoading the resource ./data/ZeaRIR/raw/BalderRIR.mat ...\n\n\n\nprint(f\"Database: {db.__class__.__name__}\")\nprint(f\"Room: {db.dataname}\")\nprint(f\"Sampling frequency: {db.fs} Hz\")\nprint(f\"Number of microphones: {db.n_mics}\")\nprint(f\"Number of time samples selected: {db.nt}\")\nprint(f\"Number of sources: {db.n_sources}\")\nprint(f\"Signal start: {db.signal_start}\")\nprint(f\"Signal size: {db.signal_size}\")\nprint(f\"Source ID: {db.source_id}\")\n\nDatabase: ZeaRIR\nRoom: BalderRIR.mat\nSampling frequency: 11250 Hz\nNumber of microphones: 100\nNumber of time samples selected: 128\nNumber of sources: 1\nSignal start: 0\nSignal size: 128\nSource ID: 0\n\n\nTesting\n\nprint(db._signal_size)\nprint(db._signal_start)\nprint(db._fs)\nprint(db._RIR.shape)\nprint(db.get_mic(imic=0, start=0, size=4))  # Get the first 4 samples of the first microphone\nprint(db.get_pos(imic=1))  # Get the position of the second microphone\nprint(db.get_time(start=0, size=4))  # Get the time for the first 4 samples\n\n128\n0\n11250\n(128, 100)\n[ 0.00041836  0.0001148  -0.00129174  0.00162724]\n[0.03]\n[0.00000000e+00 8.88888889e-05 1.77777778e-04 2.66666667e-04]\n\n\nThis is how I have calculated the MD5 of each file in resources to add it in the class definition\n\nfrom torchvision.datasets.utils import calculate_md5, check_md5\n\n\ndb = ZeaRIR(root=\"./data\")\nfor file, md5_class in db.resources:\n    url = os.path.join(db.mirrors[0], file)\n    download_url(url, root=db.raw_folder, filename=file)\n    md5 = calculate_md5(os.path.join(db.raw_folder, file))\n    print(f\"File: {file}, MD5: {md5}\")\n    assert check_md5(os.path.join(db.raw_folder, file), md5_class), (\n    f\"Check the MD5 of the resource '{file}' for the class '{db.__class__.__name__}' \"\n)\n\nMatched resources to download:\n- BalderRIR.mat\nLoading the resource ./data/ZeaRIR/raw/BalderRIR.mat ...\nFile: BalderRIR.mat, MD5: bc904010041dc18e54a1a61b23ee3f99\nFile: FrejaRIR.mat, MD5: 1dedf2ab190ad48fbfa9403409418a1d\nFile: MuninRIR.mat, MD5: 5c90de0cbbc61128de332fffc64261c9\n\n\nHere we implement the option to print the resources that can be downloaded.\nI use @patch from fastcore to add this function to the class after the class has already been defined.\nSince we just want to print the resources (class attributes), it is a class method, so it does not need an instance of the class.\n\n\n\n\n\n\nNote\n\n\n\nPylance linting does not like patch and will underline it as a possible error.\nI have added it directly to the class (the following code is just for testing purposes). (This is a callout from Quarto)\n\n\n\n@patch(cls_method=True)  \ndef print_resources(cls: DB_microphones):\n    print(f\"Resources for class {cls.__name__}:\")\n    for name, md5 in cls.resources:\n        print(f\"- {name} \")\n\n\nZeaRIR.print_resources()\n\nNow let’s implement a method to recognize if a string pattern provided as dataname matches any resources\n\nDownloading:\n\nWe give the option to give a string pattern to download several resources,\nbut each instance of the class should be used to provide measurements of only one of the resources\n\nres, _ =  db._matching_resources(\"balder\")[0]\n# print(res)\npathfname = os.path.join(db.raw_folder, res)\nprint(f\"Path to resource: {pathfname}\")\n\n\ndb = ZeaRIR(root=\"./data\", dataname=\"RIR\")\ndb._matching_resources(\"RIR\")\ndb._download_resource(\"RIR\")\n\n\n3",
+    "crumbs": [
+      "datasets",
+      "Class for RIR measurement databases"
+    ]
+  }
+]
