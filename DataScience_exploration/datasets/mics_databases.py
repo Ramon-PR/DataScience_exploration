@@ -20,22 +20,11 @@ from urllib.error import URLError
 from scipy.io import loadmat
 import json
 
-
-
 # %% ../../nbs/datasets/00_RIR_databases.ipynb 7
-# def checked_property(attr_name: str, attr_type: type = object):
-#     """ 
-#     Ensures that the attribute is initialized before accessing it. 
-#     """
-#     def getter(self):
-#         value = getattr(self, attr_name)
-#         if value is None:
-#             raise ValueError(f"Attribute '{attr_name}' is not initialized.")
-#         return value
-#     return property(getter)
-
-
-def checked_property(attr_name: str, attr_type: type = object, doc: Optional[str] = None):
+def checked_property(attr_name: str, # string with the name of the protected attribute to access, example: '_fs'
+                     attr_type: type = object, # Type of the attribute: for _fs for example is float
+                     doc: Optional[str] = None # String containing a descrption of the class attribute 
+                     ):
     """
     Ensures that the attribute is initialized before accessing it.
     """
@@ -50,22 +39,7 @@ def checked_property(attr_name: str, attr_type: type = object, doc: Optional[str
         prop.__doc__ = doc
     return prop
 
-
-# %% ../../nbs/datasets/00_RIR_databases.ipynb 13
-def read_npy_header(file_path:str) -> Tuple[Tuple[int, ...], bool, np.dtype]:
-    """ Useful to read the shape of the array in a numpy file without loading the entire file into memory."""
-    with open(file_path, 'rb') as f:
-        version = np.lib.format.read_magic(f)
-        if version == (1, 0):
-            shape, fortran_order, dtype = np.lib.format.read_array_header_1_0(f)
-        elif version == (2, 0):
-            shape, fortran_order, dtype = np.lib.format.read_array_header_2_0(f)
-        else:
-            raise ValueError(f"Unsupported .npy file version: {version}")
-    return shape, fortran_order, dtype
-
-
-# %% ../../nbs/datasets/00_RIR_databases.ipynb 19
+# %% ../../nbs/datasets/00_RIR_databases.ipynb 17
 class DB_microphones(ABC):
     """
         Base class for microphone databases.
@@ -297,7 +271,7 @@ class DB_microphones(ABC):
         assert (start_sample >= 0 and start_sample < T), f"The start_signal should be in [0, {T-1}]."
         assert (last_sample > 0 and last_sample <= T), f"The size_signal should be in [1, {T-start_sample}]."
 
-# %% ../../nbs/datasets/00_RIR_databases.ipynb 22
+# %% ../../nbs/datasets/00_RIR_databases.ipynb 20
 class ZeaRIR(DB_microphones):
     """ ZeaRIR database. """
 
@@ -326,7 +300,6 @@ class ZeaRIR(DB_microphones):
         
         self.data_folder = self.raw_folder
 
-
         # The resource *.mat is not unpacked, so we can load it directly.
         assert isinstance(filepath, str), f"Check if your resource has to be unpacked or not."
         self.load_data(filepath)
@@ -354,12 +327,10 @@ class ZeaRIR(DB_microphones):
         self._n_sources = 1
         self._source_id = 0
 
-
     def get_mic(self, imic: int, start: int, size: int) -> np.ndarray:
         """ Returns the signal of the microphone imic, starting at index start and with size size. """
         return self._RIR[start:start + size, imic]
     
-
     def get_pos(self, imic: int) -> np.ndarray:
         """ Returns the position of the microphone imic in meters (x, y, z) """
         assert 0 <= imic < self.n_mics, f"Microphone index {imic} out of range [0, {self.n_mics - 1}]"
@@ -476,7 +447,9 @@ class MeshRIR(DB_microphones):
         return self._pos_mics[imic,:]
     
     def get_time(self, start=None, size=None):
-        return super().get_time(start=self.signal_start, size=self.signal_size)
+        signal_start = self.signal_start if start is None else start
+        signal_size = self.signal_size if size is None else size
+        return super().get_time(start=signal_start, size=signal_size)
     
     def get_src_pos(self):
         if not hasattr(self, "_source_positions"):
