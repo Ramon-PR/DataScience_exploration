@@ -119,14 +119,18 @@ class DB_microphones(ABC):
         return 1.0 / self.fs  
     
     @abstractmethod
-    def get_mic(self, imic: int, start: int, size: int) -> np.ndarray:
+    def get_mic(self, imic: int, start: Optional[int], size: Optional[int]) -> np.ndarray:
         pass
 
     @abstractmethod
     def get_pos(self, imic: int) -> np.ndarray:
         pass
 
-    def get_time(self, start: int, size: int) -> np.ndarray:
+    def get_time(self, start: Optional[int]=None, size: Optional[int]=None) -> np.ndarray:
+        start = start if start is not None else self.signal_start
+        size = size if size is not None else self.signal_size
+        assert isinstance(start, int)
+        assert isinstance(size, int)
         return (start + np.arange(size)) * self.dt
     
     def _matching_resources(self,
@@ -327,8 +331,12 @@ class ZeaRIR(DB_microphones):
         self._n_sources = 1
         self._source_id = 0
 
-    def get_mic(self, imic: int, start: int, size: int) -> np.ndarray:
+    def get_mic(self, imic: int, start: Optional[int]=None, size: Optional[int]=None) -> np.ndarray:
         """ Returns the signal of the microphone imic, starting at index start and with size size. """
+        start = start if start is not None else self.signal_start
+        size = size if size is not None else self.signal_size
+        assert isinstance(start, int)
+        assert isinstance(size, int)
         return self._RIR[start:start + size, imic]
     
     def get_pos(self, imic: int) -> np.ndarray:
@@ -456,6 +464,10 @@ class MeshRIR(DB_microphones):
             self.load_src_positions()
         return self._source_positions[self.source_id]
     
-    def get_mic(self, imic: int, start: int, size: int) -> np.ndarray:
+    def get_mic(self, imic: int, start=None, size=None) -> np.ndarray:
         """ Returns the signal of the microphone imic, starting at index start and with size size. """
+        start = start if start is not None else self.signal_start
+        size = size if size is not None else self.signal_size
+        assert isinstance(start, int)
+        assert isinstance(size, int)
         return self.load_mic(imic=imic)[start:start + size]

@@ -76,4 +76,5 @@ d = { 'settings': { 'branch': 'main',
                                                                  'DataScience_exploration.datasets.mics_databases.ZeaRIR.load_data': ( 'datasets/rir_databases.html#zearir.load_data',
                                                                                                                                        'DataScience_exploration/datasets/mics_databases.py'),
                                                                  'DataScience_exploration.datasets.mics_databases.checked_property': ( 'datasets/rir_databases.html#checked_property',
-                                                                                                                                       'DataScience_exploration/datasets/mics_databases.py')}}}
+                                                                                                                                       'DataScience_exploration/datasets/mics_databases.py')},
+            'DataScience_exploration.datasets.mics_datasets': {}}}
