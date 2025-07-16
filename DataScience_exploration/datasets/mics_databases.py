@@ -43,7 +43,7 @@ def checked_property(attr_name: str, # string with the name of the protected att
 class DB_microphones(ABC):
     """
         Base class for microphone databases.
-        I define the @property methods here, so I don't have to redefine them in the subclasses.
+        Defines methods: get_mic, get_pos, get_time and class @property such as .fs, .nt, .n_mics, .n_sources, ...
     """
 
     # ClassVar tells Pylance that these are Class variables, not instance variables.
@@ -119,14 +119,14 @@ class DB_microphones(ABC):
         return 1.0 / self.fs  
     
     @abstractmethod
-    def get_mic(self, imic: int, start: Optional[int], size: Optional[int]) -> np.ndarray:
+    def get_mic(self, imic: int, start: Optional[int]=None, size: Optional[int]=None) -> np.ndarray:
         pass
 
     @abstractmethod
     def get_pos(self, imic: int) -> np.ndarray:
         pass
 
-    def get_time(self, start: Optional[int]=None, size: Optional[int]=None) -> np.ndarray:
+    def get_time(self, start: Optional[int]=None, size: Optional[int]=None) -> np.ndarray:        
         start = start if start is not None else self.signal_start
         size = size if size is not None else self.signal_size
         assert isinstance(start, int)
@@ -453,12 +453,7 @@ class MeshRIR(DB_microphones):
             self.load_mic_positions()
         assert 0 <= imic < self.n_mics, f"Microphone index {imic} out of range [0, {self.n_mics - 1}]"
         return self._pos_mics[imic,:]
-    
-    def get_time(self, start=None, size=None):
-        signal_start = self.signal_start if start is None else start
-        signal_size = self.signal_size if size is None else size
-        return super().get_time(start=signal_start, size=signal_size)
-    
+     
     def get_src_pos(self):
         if not hasattr(self, "_source_positions"):
             self.load_src_positions()
