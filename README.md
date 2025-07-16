@@ -6,6 +6,34 @@
 This file will become your README and also the index of your
 documentation.
 
+## First steps
+
+1.  Check that you will install everything in an environment that you
+    want.
+
+``` sh
+$ conda create -n my_env
+$ conda activate my_env
+```
+
+2.  Install nbdev (-U for upgrade, pip will upgrade it to the newest
+    available version.)
+
+``` sh
+$ pip install -U nbdev
+```
+
+3.  git clone the repo and install it in Development mode
+
+``` sh
+$ git clone https://github.com/Ramon-PR/DataScience_exploration.git
+$ pip install -e .
+```
+
+4.  In `settings.ini` you can see the packages that are required in the
+    section “requirements”. Do not forget to update this section if you
+    install a package.
+
 ## Developer Guide
 
 If you are new to using `nbdev` here are some useful pointers to get you
