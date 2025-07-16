@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Class to get the acoustic time-series and other meta-data of RIR acoustic measurements">
+
+<title>Class for RIR measurement databases – DataScience_exploration</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2c2b2e643518224cf2d75a643cacf640.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Class for RIR measurement databases – DataScience_exploration">
+<meta property="og:description" content="Class to get the acoustic time-series and other meta-data of RIR acoustic measurements">
+<meta property="og:site_name" content="DataScience_exploration">
+<meta name="twitter:title" content="Class for RIR measurement databases – DataScience_exploration">
+<meta name="twitter:description" content="Class to get the acoustic time-series and other meta-data of RIR acoustic measurements">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">DataScience_exploration</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../datasets/rir_databases.html">datasets</a></li><li class="breadcrumb-item"><a href="../datasets/rir_databases.html">Class for RIR measurement databases</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DataScience_exploration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">datasets</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../datasets/rir_databases.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Class for RIR measurement databases</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../datasets/rir_torch_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Implementation of torch Datasets based on the RIR databases</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a.-helper-funtions" id="toc-a.-helper-funtions" class="nav-link active" data-scroll-target="#a.-helper-funtions">A. Helper funtions</a>
+  <ul class="collapse">
+  <li><a href="#checked_property" id="toc-checked_property" class="nav-link" data-scroll-target="#checked_property">checked_property</a></li>
+  </ul></li>
+  <li><a href="#b.-database-for-microphones" id="toc-b.-database-for-microphones" class="nav-link" data-scroll-target="#b.-database-for-microphones">B. Database for microphones</a>
+  <ul class="collapse">
+  <li><a href="#base-class" id="toc-base-class" class="nav-link" data-scroll-target="#base-class">Base class</a></li>
+  <li><a href="#db_microphones" id="toc-db_microphones" class="nav-link" data-scroll-target="#db_microphones">DB_microphones</a></li>
+  <li><a href="#zea-database" id="toc-zea-database" class="nav-link" data-scroll-target="#zea-database">Zea database</a></li>
+  <li><a href="#zearir" id="toc-zearir" class="nav-link" data-scroll-target="#zearir">ZeaRIR</a></li>
+  <li><a href="#meshrir-database" id="toc-meshrir-database" class="nav-link" data-scroll-target="#meshrir-database">MeshRIR database</a></li>
+  <li><a href="#meshrir" id="toc-meshrir" class="nav-link" data-scroll-target="#meshrir">MeshRIR</a></li>
+  </ul></li>
+  <li><a href="#good-practices-after-coding" id="toc-good-practices-after-coding" class="nav-link" data-scroll-target="#good-practices-after-coding">Good Practices (after coding)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Ramon-PR/DataScience_exploration/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="rir_databases.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../datasets/rir_databases.html">datasets</a></li><li class="breadcrumb-item"><a href="../datasets/rir_databases.html">Class for RIR measurement databases</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Class for RIR measurement databases</h1>
+</div>
+
+<div>
+  <div class="description">
+    Class to get the acoustic time-series and other meta-data of RIR acoustic measurements
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="a.-helper-funtions" class="level2">
+<h2 class="anchored" data-anchor-id="a.-helper-funtions">A. Helper funtions</h2>
+<p>We will define many class properties with <code>@property</code> and to make sure all the attributes are initialized before their use, we define the following method</p>
+<hr>
+<p><a href="https://github.com/Ramon-PR/DataScience_exploration/blob/main/DataScience_exploration/datasets/mics_databases.py#L24" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="checked_property" class="level3">
+<h3 class="anchored" data-anchor-id="checked_property">checked_property</h3>
+<blockquote class="blockquote">
+<pre><code> checked_property (attr_name:str, attr_type:type=&lt;class 'object'&gt;,
+                   doc:Optional[str]=None)</code></pre>
+</blockquote>
+<p><em>Ensures that the attribute is initialized before accessing it.</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>attr_name</td>
+<td>str</td>
+<td></td>
+<td>string with the name of the protected attribute to access, example: ’_fs’</td>
+</tr>
+<tr class="even">
+<td>attr_type</td>
+<td>type</td>
+<td>object</td>
+<td>Type of the attribute: for _fs for example is float</td>
+</tr>
+<tr class="odd">
+<td>doc</td>
+<td>Optional</td>
+<td>None</td>
+<td>String containing a descrption of the class attribute</td>
+</tr>
+</tbody>
+</table>
+<p>Example of use:</p>
+<div id="0a764a1d" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Mics(ABC):  </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    _fs: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>  </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    fs <span class="op">=</span> checked_property(<span class="st">'_fs'</span>, <span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And if we use the property to access <code>_fs</code> without it being initialized, it should give an error</p>
+<div id="20e953be" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mic <span class="op">=</span> Mics()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mic._fs)  <span class="co"># ``_fs`` is None,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(mic.fs)  <span class="co"># ❌ But the property ``fs`` requires _fs to be initialized to a float value</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Caught ValueError: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>None
+Caught ValueError: Attribute '_fs' is not initialized.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="b.-database-for-microphones" class="level2">
+<h2 class="anchored" data-anchor-id="b.-database-for-microphones">B. Database for microphones</h2>
+<blockquote class="blockquote">
+<p>The base class to handle RIR measurements.</p>
+</blockquote>
+<p>This class defines common properties and methods for the different RIR databases that will inherit from it. The class DB_microphones will be an abstract class (from abc import ABC, abstractmethod)</p>
+<ul>
+<li><strong>ABC</strong>: base clase to declare an <strong>A</strong>bstract <strong>B</strong>ase <strong>C</strong>lass<br>
+</li>
+<li><strong>abstractmethod</strong>: it is a decorator to indicate which methods have to be implemented by the subclasses</li>
+</ul>
+<p>This is useful since this base class can not be implemented and will force the subclasses to implement certain methods <code>abstractmethod</code></p>
+<p>Inspired by MNIST dataset, we will download the data in a folder structure like <code>./root/class_name/raw</code>.</p>
+<ul>
+<li><strong>root</strong>: is a parameter passed to the class</li>
+<li><strong>class_name</strong>: is the name of the class used to download the database<br>
+</li>
+<li><strong>raw</strong>: is the subfolder where the raw data is downloaded</li>
+</ul>
+<p>and we will include a <code>mirror</code> list with the urls where we can find the data to download, and a list <code>resources</code> that contains tuples with the name of the file to download and it’s md5 checksum.</p>
+<section id="base-class" class="level3">
+<h3 class="anchored" data-anchor-id="base-class">Base class</h3>
+<hr>
+<p><a href="https://github.com/Ramon-PR/DataScience_exploration/blob/main/DataScience_exploration/datasets/mics_databases.py#L43" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="db_microphones" class="level3">
+<h3 class="anchored" data-anchor-id="db_microphones">DB_microphones</h3>
+<blockquote class="blockquote">
+<pre><code> DB_microphones (root:str='./data', dataname:str='RIR',
+                 signal_start:int=0, signal_size:Optional[int]=None)</code></pre>
+</blockquote>
+<p><em>Base class for microphone databases. Defines methods: get_mic, get_pos, get_time and class <span class="citation" data-cites="property">@property</span> such as .fs, .nt, .n_mics, .n_sources, …</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>root</td>
+<td>str</td>
+<td>./data</td>
+<td>Path to the root directory of the database, where the data will be dowloaded</td>
+</tr>
+<tr class="even">
+<td>dataname</td>
+<td>str</td>
+<td>RIR</td>
+<td>String matching the name of the resources to download and load. (if several resources are available, all will be downloaded but only the first one will be loaded).</td>
+</tr>
+<tr class="odd">
+<td>signal_start</td>
+<td>int</td>
+<td>0</td>
+<td>Start index of the signal in the data</td>
+</tr>
+<tr class="even">
+<td>signal_size</td>
+<td>Optional</td>
+<td>None</td>
+<td>int or None. Size of the signal to be extracted from the data, if None, the whole signal will be loaded.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="zea-database" class="level3">
+<h3 class="anchored" data-anchor-id="zea-database">Zea database</h3>
+<blockquote class="blockquote">
+<p>Database from <a href="https://www.sciencedirect.com/science/article/abs/pii/S0022460X19304316">Elias Zea</a> . It will inherit from DB_microphones</p>
+</blockquote>
+<p>This is one of the RIR databases. It will have to implement it’s own attributes:<br>
++ <code>mirrors</code><br>
++ <code>resources</code><br>
++ <code>microphone spacing</code></p>
+<p>And the methods:<br>
++ To check what resource to load<br>
++ To download the resources<br>
++ To unpack the downloaded resources<br>
++ To load the selected resource (database/dataname)<br>
++ To get the different attributes in the database: <code>dx</code>, <code>dt</code>, <code>fs</code>, <code>num_mics</code>, <code>num_sources</code><br>
++ And also the data related with the microphone recordings: <code>imic</code>, <code>position</code>, <code>time_samples</code>, <code>signal</code></p>
+<hr>
+<p><a href="https://github.com/Ramon-PR/DataScience_exploration/blob/main/DataScience_exploration/datasets/mics_databases.py#L279" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="zearir" class="level3">
+<h3 class="anchored" data-anchor-id="zearir">ZeaRIR</h3>
+<blockquote class="blockquote">
+<pre><code> ZeaRIR (root:str='./data', dataname:str='Balder', signal_start:int=0,
+         signal_size:Optional[int]=None)</code></pre>
+</blockquote>
+<p><em>ZeaRIR database.</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>root</td>
+<td>str</td>
+<td>./data</td>
+<td>Path to the root directory of the database, where the data will be dowloaded</td>
+</tr>
+<tr class="even">
+<td>dataname</td>
+<td>str</td>
+<td>Balder</td>
+<td>String matching the name of the resources to download and load. (if several resources are available, all will be downloaded but only the first one will be loaded).</td>
+</tr>
+<tr class="odd">
+<td>signal_start</td>
+<td>int</td>
+<td>0</td>
+<td>Start index of the signal to load.</td>
+</tr>
+<tr class="even">
+<td>signal_size</td>
+<td>Optional</td>
+<td>None</td>
+<td># int or None. Size of the signal to be extracted from the data, if None, the whole signal will be loaded.</td>
+</tr>
+</tbody>
+</table>
+<section id="checks-that-zea-database-works" class="level4">
+<h4 class="anchored" data-anchor-id="checks-that-zea-database-works">Checks that Zea database works</h4>
+<div id="72a4d16f" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> ZeaRIR(root<span class="op">=</span><span class="st">"./data"</span>, dataname<span class="op">=</span><span class="st">"RIR"</span>, signal_start<span class="op">=</span><span class="dv">0</span>, signal_size<span class="op">=</span><span class="dv">128</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Matched resources to download:
+- BalderRIR.mat
+- FrejaRIR.mat
+- MuninRIR.mat
+Loading the resource ./data/ZeaRIR/raw/BalderRIR.mat ...</code></pre>
+</div>
+</div>
+<p>It has checked what resources match with dataname “RIR”, and found three resources. It downloads all the matching resources. It only loads the data for the first resource “Balder”, because there each object of this class should only return signals from the same room. To load other rooms I give a singular dataname corresponding to the name of that resource.<br>
+If the resources are already in the folder, it will skip the download:</p>
+<div id="cc7ddca2" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>db._download_resource(resource_name<span class="op">=</span><span class="st">"Balder"</span>) <span class="co"># Just return (no error message) because "BalderRIR.mat" is in the raw folder</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And we can check that the correct room and its parameters are properly loaded</p>
+<div id="bab4c42f" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(db)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Database: ZeaRIR
+Download: ['BalderRIR.mat', 'FrejaRIR.mat', 'MuninRIR.mat']
+Load room: BalderRIR.mat
+Path to raw resource: ./data/ZeaRIR/raw/BalderRIR.mat
+Path to unpacked data folder: ./data/ZeaRIR/raw
+Sampling frequency: 11250 Hz
+Number of microphones: 100
+Number of total time samples: 3623
+Number of time samples selected: 128
+Number of sources: 1
+Signal start: 0
+Signal size: 128
+Source ID: 0</code></pre>
+</div>
+</div>
+<p>We can check the data that it has loaded from the memory and that the main get methods work:</p>
+<div id="c7211e9f" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Loaded chunk of data of size </span><span class="sc">{</span>db<span class="sc">.</span>_RIR<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Output of get_mic  (4 time samples): </span><span class="sc">{</span>db<span class="sc">.</span>get_mic(imic<span class="op">=</span><span class="dv">0</span>, start<span class="op">=</span><span class="dv">0</span>, size<span class="op">=</span><span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Output of get_time (4 time samples): </span><span class="sc">{</span>db<span class="sc">.</span>get_time(start<span class="op">=</span><span class="dv">0</span>, size<span class="op">=</span><span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Test of get_pos: </span><span class="sc">{</span>db<span class="sc">.</span>get_pos(imic<span class="op">=</span><span class="dv">1</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loaded chunk of data of size (128, 100)
+Output of get_mic  (4 time samples): [ 0.00041836  0.0001148  -0.00129174  0.00162724]
+Output of get_time (4 time samples): [0.00000000e+00 8.88888889e-05 1.77777778e-04 2.66666667e-04]
+Test of get_pos: [0.03 0.   0.  ]</code></pre>
+</div>
+</div>
+<p>Before implementing the downloading method, I used this code to test how to download the resources and what MD5 should I write for each resource (since it is not provided in the given mirror).</p>
+<div id="94f82a87" class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.datasets.utils <span class="im">import</span> calculate_md5, check_md5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="0956f60b" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># db = ZeaRIR(root="./data")</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span>, md5_class <span class="kw">in</span> db.resources:</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> os.path.join(db.mirrors[<span class="dv">0</span>], <span class="bu">file</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    download_url(url, root<span class="op">=</span>db.raw_folder, filename<span class="op">=</span><span class="bu">file</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    md5 <span class="op">=</span> calculate_md5(os.path.join(db.raw_folder, <span class="bu">file</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"File: </span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">, MD5: </span><span class="sc">{</span>md5<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> check_md5(os.path.join(db.raw_folder, <span class="bu">file</span>), md5_class), (</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Check the MD5 of the resource '</span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">' for the class '</span><span class="sc">{</span>db<span class="sc">.</span><span class="va">__class__</span><span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss">' "</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>File: BalderRIR.mat, MD5: bc904010041dc18e54a1a61b23ee3f99
+File: FrejaRIR.mat, MD5: 1dedf2ab190ad48fbfa9403409418a1d
+File: MuninRIR.mat, MD5: 5c90de0cbbc61128de332fffc64261c9</code></pre>
+</div>
+</div>
+<p>It may be useful to check the name of the resources before instantiating an object (which will initiate the downloading process).<br>
+I can implement a class method to print the resources that can be downloaded.</p>
+<div id="b6e86c58" class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ZeaRIR.print_resources()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Resources for class ZeaRIR:
+- BalderRIR.mat 
+- FrejaRIR.mat 
+- MuninRIR.mat </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I am developing using nbdev, which includes an option <code>patch</code> from the library <code>fastcore</code>, that allows to implement a method of a class outside of the class definition, by declaring to which class it has to “patch” the method.<br>
+In the autogenerated .py file it will appear in a way that I am not that familiar, so I opted to just use patch for didactic purposes, but the exported code is already in the class definition.</p>
+</div>
+</div>
+<div id="3d47ea88" class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span>(cls_method<span class="op">=</span><span class="va">True</span>)  </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_resources(cls: DB_microphones):</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"!!Method overwritten by a patch!!"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Resources for class </span><span class="sc">{</span>cls<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, md5 <span class="kw">in</span> cls.resources:</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"- </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pylance linting does not like <code>patch</code> and will underline it as a possible error.<br>
+I have added it directly to the class (the following code is just for testing purposes). (<a href="https://quarto.org/docs/authoring/callouts.html#callout-types">This is a callout from Quarto</a>)</p>
+</div>
+</div>
+<p>I can overwrite the method with patch (note the extra line)</p>
+<div id="cbe16a2b" class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ZeaRIR.print_resources()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>!!Method overwritten by a patch!!
+Resources for class ZeaRIR:
+- BalderRIR.mat 
+- FrejaRIR.mat 
+- MuninRIR.mat </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="meshrir-database" class="level3">
+<h3 class="anchored" data-anchor-id="meshrir-database">MeshRIR database</h3>
+<blockquote class="blockquote">
+<p>Database from <a href="https://arxiv.org/abs/2106.10801">Shoichi Koyama</a>, National Institute of Informatics, Tokyo, Japan . It will inherit from DB_micorphones</p>
+</blockquote>
+<hr>
+<p><a href="https://github.com/Ramon-PR/DataScience_exploration/blob/main/DataScience_exploration/datasets/mics_databases.py#L352" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="meshrir" class="level3">
+<h3 class="anchored" data-anchor-id="meshrir">MeshRIR</h3>
+<blockquote class="blockquote">
+<pre><code> MeshRIR (root:str='./data', dataname:str='S1', signal_start:int=0,
+          signal_size:Optional[int]=None, source_id:int=0)</code></pre>
+</blockquote>
+<p><em>Base class for microphone databases. Defines methods: get_mic, get_pos, get_time and class <span class="citation" data-cites="property">@property</span> such as .fs, .nt, .n_mics, .n_sources, …</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>root</td>
+<td>str</td>
+<td>./data</td>
+<td>Path to the root directory of the database, where the data will be dowloaded</td>
+</tr>
+<tr class="even">
+<td>dataname</td>
+<td>str</td>
+<td>S1</td>
+<td>String matching the name of the resources to download and load. (if several resources are available, all will be downloaded but only the first one will be loaded).</td>
+</tr>
+<tr class="odd">
+<td>signal_start</td>
+<td>int</td>
+<td>0</td>
+<td>Start index of the signal to load.</td>
+</tr>
+<tr class="even">
+<td>signal_size</td>
+<td>Optional</td>
+<td>None</td>
+<td>Size of the signal to load. If None, the whole signal will be loaded.</td>
+</tr>
+<tr class="odd">
+<td>source_id</td>
+<td>int</td>
+<td>0</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s check the MeshRIR database implementation:</p>
+<div id="728b48e6" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>db2 <span class="op">=</span> MeshRIR(root<span class="op">=</span><span class="st">"./data"</span>, dataname<span class="op">=</span><span class="st">"S32"</span>, signal_start<span class="op">=</span><span class="dv">0</span>, signal_size<span class="op">=</span><span class="dv">128</span>, source_id<span class="op">=</span><span class="dv">31</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Matched resources to download:
+- S32-M441_npy.zip
+Unpacked folder ./data/MeshRIR/raw/S32-M441_npy already exists. Skipping unpacking.</code></pre>
+</div>
+</div>
+<p>Since this is a heavier database, I have already checked that the downloading method works.<br>
+This database requires to unzip the resource, the class has checked that the unpacked folder already exists, so it does not download and unpack the resource.</p>
+<div id="23d8768f" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(db2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Database: MeshRIR
+Download: ['S32-M441_npy.zip']
+Load room: S32-M441_npy.zip
+Path to raw resource: ./data/MeshRIR/raw/S32-M441_npy.zip
+Path to unpacked data folder: ./data/MeshRIR/raw/S32-M441_npy
+Sampling frequency: 48000 Hz
+Number of microphones: 441
+Number of total time samples: 32768
+Number of time samples selected: 128
+Number of sources: 32
+Signal start: 0
+Signal size: 128
+Source ID: 31</code></pre>
+</div>
+</div>
+<p>Test of main get methods:</p>
+<div id="8bfbae1f" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"In this database we do not preload all the database."</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Output of get_mic  (4 time samples): </span><span class="sc">{</span>db2<span class="sc">.</span>get_mic(imic<span class="op">=</span><span class="dv">0</span>, start<span class="op">=</span><span class="dv">0</span>, size<span class="op">=</span><span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Output of get_time (4 time samples): </span><span class="sc">{</span>db2<span class="sc">.</span>get_time(start<span class="op">=</span><span class="dv">0</span>, size<span class="op">=</span><span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Test of get_pos: </span><span class="sc">{</span>db2<span class="sc">.</span>get_pos(imic<span class="op">=</span><span class="dv">1</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>In this database we do not preload all the database.
+Output of get_mic  (4 time samples): [0.00599654 0.00572385 0.00485317 0.00515282]
+Output of get_time (4 time samples): [0.00000000e+00 2.08333333e-05 4.16666667e-05 6.25000000e-05]
+Test of get_pos: [-0.4 -0.5  0. ]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="good-practices-after-coding" class="level2">
+<h2 class="anchored" data-anchor-id="good-practices-after-coding">Good Practices (after coding)</h2>
+<blockquote class="blockquote">
+<p>Things that I have learnt, or thought they are interesting after coding this notebook</p>
+</blockquote>
+<ol type="1">
+<li>Use of <strong>Inheritance</strong>
+<ul>
+<li>There are different experimental databases but it is useful to crete a base class with the methods that I want to use for my applications.</li>
+<li>In the <strong>base class</strong> I try to define common attributes. The “protected” attributes starting with underscore ex: _fs. The “private” attributes starting with double-underscore ex: __fs.</li>
+<li>The class can have methods <strong>getter</strong> to return the protected and private attributes. In particular Iwill use <code>@property</code> to define which attributes I want to access. I can access <code>obj._fs</code> with <code>obj.fs</code> property method.</li>
+<li>It is possible to instantiate objecs of the <strong>base class</strong>, although it will not have the information we require, since this is an <code>abstract</code> class. To avoid wrong uses, there is the package abc (abstract base class) that includes definitions that are useful to define the behaviour of classes like this.</li>
+<li>Inheriting from ABC (Abstract Base Class) and declaring <code>@abstractmethods</code> that each subclass have to implement, avoids the instantiation of objects of any abstractclass or its subclasses is the abstractmethods are not overridden.</li>
+<li>This is useful to remind you that you have to implement all the abstractmethods before you can use a class.</li>
+<li>The base class contains the commonalities between databases so I do not have to repeat code.</li>
+<li>In the base class I can <strong><strong>init</strong></strong> only the strictly necessary attributes, but if there is a set of operations that may be used in different subclasses, I can define a method, like <code>_prepare_data(self)</code>, and in the subclasses.__init__() I can use that method defined in the base class. <strong>This avoids a case where a new subclass has a different init logic and I have to review the init logic of the base class</strong>.</li>
+</ul></li>
+<li>Logic and options to <strong>download</strong> the databases
+<ul>
+<li>Inspired by <strong>MNIST</strong> I can write in the subclasses the class attributes <code>mirrors</code> and <code>resources</code>, with the urls where I can download the files(resources).</li>
+<li>From <strong>MNIST</strong> I also use some downloading logic and what libraries to use to download, unpack and check data.</li>
+<li>When downloading files from github, do not use the url that can be seen in the explorer, but use the url where github saves the raw data: <code>"https://raw.githubusercontent.com/{USER}/{REPO}/{BRANCH}/{PATH_DATA_FOLDER}/"</code> substituting the <code>USER</code>, <code>REPO</code>, <code>BRANCH</code>, <code>PATH_DATA_FOLDER</code> of the file that you want to download, as seen in the normal github url of the data.</li>
+</ul></li>
+<li>Use a lot <strong><code>assert</code></strong>
+<ul>
+<li>It is very useful to check for errors and that your parameters are supposed to be of a certain kind or in certain bounds.</li>
+<li>Sometimes Pylance or other linters show errors although the code is perfectly functional, because it can not detect the type of your data, an assert before the line of code where Pylance shows an error can tell Pylance that your data is gonna be of the type that is supposed to be, therefore, the operations such as + are compatible with those variables.</li>
+</ul></li>
+<li>Use the method <code>__str__()</code>, to print useful information of the object, like different attributes, statistics, etc. Then use it as <code>print(obj)</code>.</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Ramon-PR\.github\.io\/DataScience_exploration");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Ramon-PR/DataScience_exploration/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
